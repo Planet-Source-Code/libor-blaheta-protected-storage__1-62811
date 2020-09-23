@@ -1,0 +1,142 @@
+[
+  uuid(58141EBD-2DB1-11D0-8C39-00C04FD9126B),
+  version(1.0),
+  helpstring("PStore VB TypeLib by Dr Memory")
+]
+library PStoreLib
+{
+    importlib("stdole2.tlb");
+    interface IEnumPStoreProviders;
+    interface IPStore;
+    interface IEnumPStoreTypes;
+    interface IEnumPStoreItems;
+
+    [
+      uuid(58141EC3-2DB1-11D0-8C39-00C04FD9126B),
+    ]
+    coclass CPStore {
+        interface IPStore;
+    };
+    [
+      odl, 
+      uuid(58141EC0-2DB1-11D0-8C39-00C04FD9126B),
+    ]
+
+    interface IPStore : IUnknown {
+    
+    // 1st entry is ordinal 003,
+        
+        //added - Libor
+        HRESULT _stdcall GetInfo(
+        	[in] long pProvider
+        );
+                     
+        HRESULT _stdcall GetProvParam();       
+        HRESULT _stdcall SetProvParam();       
+        HRESULT _stdcall CreateType();         
+        
+        //added - Libor
+        HRESULT _stdcall GetTypeInfo(
+        	[in] long Key, 
+        	[in] long pItemType, 
+        	[in] long pPST_TYPEINFO,
+        	[in] long dwFlags
+        );
+
+        HRESULT _stdcall DeleteType();         
+        HRESULT _stdcall CreateSubtype();      
+        
+        //added - Libor
+        HRESULT _stdcall GetSubtypeInfo(
+        	[in] long Key, 
+        	[in] long pItemType, 
+        	[in] long pItemSubType, 
+        	[in] long pPPST_TYPEINFO,
+        	[in] long dwFlags
+        );     
+        
+        HRESULT _stdcall DeleteSubtype();      
+        HRESULT _stdcall ReadAccessRuleset();  
+        HRESULT _stdcall WriteAccessRuleset(); 
+    
+    // 014   <===.
+        HRESULT _stdcall EnumTypes(          
+                        [in] long Key, 
+                        [in] long dwFlags, 
+                        [in] IEnumPStoreTypes** ppenum);
+    // 015   <===
+        HRESULT _stdcall EnumSubtypes(          
+                        [in] long Key, 
+                        [in] long pType, 
+                        [in] long dwFlags, 
+                        [in] IEnumPStoreTypes** ppenum);
+
+        HRESULT _stdcall DeleteItem();           
+        
+        //added - Libor
+        HRESULT _stdcall ReadItem(
+        		[in] long Key,
+        		[in] long pItemType,
+        		[in] long pItemSubtype,
+        		[in] long pItemName,
+        		[out] long* DataLen,
+        		[out] long* pbData,
+        		[in] long pPromptInfo,
+        		[in] long dwFlags
+        );
+        
+        HRESULT _stdcall WriteItem();          
+        HRESULT _stdcall OpenItem();           
+        HRESULT _stdcall CloseItem();          
+    
+    // 021   <===
+        HRESULT _stdcall EnumItems(            
+                        [in] long Key, 
+                        [in] long pItemType, 
+                        [in] long pItemSubtype, 
+                        [in] long dwFlags, 
+                        [in] IEnumPStoreItems** ppenum);
+    };
+
+    [
+      odl,
+      uuid(58141CBF-31EE-11D0-8C39-00C04FD9126B)
+    ]
+    interface IEnumPStoreTypes : IUnknown {
+        HRESULT _stdcall Next(
+                        [in] long celt, 
+                        [in] long rgelt, 
+                        [in] long pceltFetched);
+        HRESULT _stdcall Skip([in] long celt);
+        HRESULT _stdcall Reset();
+        HRESULT _stdcall Clone([in] IEnumPStoreTypes** ppenum);
+    };
+
+    [
+      odl,
+      uuid(58141EC1-2DB1-11D0-8C39-00C04FD9126B)
+    ]
+    interface IEnumPStoreItems : IUnknown {
+        HRESULT _stdcall Next(
+                        [in] long celt, 
+                        [out] long* lpItem, 
+                        [in] long pceltFetched);
+        HRESULT _stdcall Skip([in] long celt);
+        HRESULT _stdcall Reset();
+        HRESULT _stdcall Clone([out] IEnumPStoreItems** ppenum);
+    };
+
+    [
+      uuid(581461E7-31EC-11D0-8C39-00C04FD9126B)
+    ]
+    coclass CEnumTypes {
+        [default] interface IEnumPStoreTypes;
+    };
+
+    [
+      uuid(581461E6-31EC-11D0-8C39-00C04FD9126B)
+    ]
+    coclass CEnumItems {
+        [default] interface IEnumPStoreItems;
+    };
+};
